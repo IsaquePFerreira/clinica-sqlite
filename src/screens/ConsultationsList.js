@@ -21,14 +21,28 @@ export default function ConsultationsList({ navigation, route }) {
   function confirmDelete(id) {
     Alert.alert('Confirmar', 'Excluir consulta?', [
       { text: 'Cancelar', style: 'cancel' },
-      { text: 'Excluir', style: 'destructive', onPress: async () => { await deleteConsultation(id); load(); } }
+      { 
+        text: 'Excluir', 
+        style: 'destructive', 
+        onPress: async () => { 
+          await deleteConsultation(id); 
+          load(); 
+        } 
+      }
     ]);
   }
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <TouchableOpacity style={{ backgroundColor: '#2d89ef', padding: 12, borderRadius: 6, marginBottom: 12 }} onPress={() => navigation.navigate('ConsultaForm', { paciente })}>
-        <Text style={{ color: 'white', textAlign: 'center' }}>Nova Consulta para {paciente?.nome}</Text>
+      
+      {/* BOTÃO DE NOVA CONSULTA — CORRIGIDO */}
+      <TouchableOpacity 
+        style={{ backgroundColor: '#2d89ef', padding: 12, borderRadius: 6, marginBottom: 12 }} 
+        onPress={() => navigation.navigate('ConsultationForm', { paciente })}
+      >
+        <Text style={{ color: 'white', textAlign: 'center' }}>
+          Nova Consulta para {paciente?.nome}
+        </Text>
       </TouchableOpacity>
 
       <FlatList
@@ -38,13 +52,21 @@ export default function ConsultationsList({ navigation, route }) {
           <View style={{ padding: 12, borderBottomWidth: 1, borderColor: '#eee' }}>
             <Text style={{ fontWeight: 'bold' }}>{item.data}</Text>
             <Text>{item.descricao}</Text>
+
             <View style={{ flexDirection: 'row', marginTop: 8 }}>
-              <TouchableOpacity onPress={() => navigation.navigate('ConsultationForm', { paciente, id: item.id })} style={{ marginRight: 12 }}>
+              
+              {/* BOTÃO EDITAR — CORRIGIDO */}
+              <TouchableOpacity 
+                onPress={() => navigation.navigate('ConsultationForm', { paciente, id: item.id })} 
+                style={{ marginRight: 12 }}
+              >
                 <Text style={{ color: '#2d89ef' }}>Editar</Text>
               </TouchableOpacity>
+
               <TouchableOpacity onPress={() => confirmDelete(item.id)}>
                 <Text style={{ color: 'red' }}>Excluir</Text>
               </TouchableOpacity>
+
             </View>
           </View>
         )}

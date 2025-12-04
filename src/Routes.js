@@ -25,7 +25,7 @@ export default function Routes() {
         />
 
         <Stack.Screen
-          name="ConsultationsList"
+          name="Consultas"
           component={ConsultationsList}
           options={{ title: "Consultas" }}
         />
