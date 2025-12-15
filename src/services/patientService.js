@@ -1,48 +1,60 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  where,
+} from "firebase/firestore";
 
-const KEY = "@clinica_pacientes_v1";
-
-async function readDB() {
-  const raw = await AsyncStorage.getItem(KEY);
-  return raw ? JSON.parse(raw) : { pacientes: [], consultas: [] };
-}
-async function writeDB(db) {
-  await AsyncStorage.setItem(KEY, JSON.stringify(db));
-}
-
-// Pacientes
+// CREATE
 export async function createPatient({ nome, telefone, idade }) {
-  const db = await readDB();
-  const id = Date.now();
-  db.pacientes.push({ id, nome, telefone, idade: idade ?? null });
-  await writeDB(db);
-  return id;
+  const ref = await addDoc(collection(db, "pacientes"), {
+    nome,
+    telefone,
+    idade: idade ?? null,
+  });
+  return ref.id;
 }
 
+// READ ALL
 export async function getAllPatients() {
-  const db = await readDB();
-  // ordena por nome
-  return db.pacientes.sort((a,b)=> String(a.nome).localeCompare(String(b.nome)));
+  const q = query(collection(db, "pacientes"), orderBy("nome"));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
+// READ ONE
 export async function getPatientById(id) {
-  const db = await readDB();
-  return db.pacientes.find(p => p.id === id);
+  const snap = await getDoc(doc(db, "pacientes", id));
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 }
 
+// UPDATE
 export async function updatePatient(id, { nome, telefone, idade }) {
-  const db = await readDB();
-  const idx = db.pacientes.findIndex(p => p.id === id);
-  if (idx >= 0) {
-    db.pacientes[idx] = { id, nome, telefone, idade: idade ?? null };
-    await writeDB(db);
-  }
+  await updateDoc(doc(db, "pacientes", id), {
+    nome,
+    telefone,
+    idade: idade ?? null,
+  });
 }
 
+// DELETE (and cascade consultations)
 export async function deletePatient(id) {
-  const db = await readDB();
-  // Remove paciente e suas consultas
-  db.pacientes = db.pacientes.filter(p => p.id !== id);
-  db.consultas = db.consultas.filter(c => c.paciente_id !== id);
-  await writeDB(db);
+  // delete patient
+  await deleteDoc(doc(db, "pacientes", id));
+
+  // delete consultations
+  const q = query(
+    collection(db, "consultas"),
+    where("paciente_id", "==", id)
+  );
+  const snap = await getDocs(q);
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
 }
+

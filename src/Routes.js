@@ -15,7 +15,7 @@ export default function Routes() {
         <Stack.Screen
           name="PatientsList"
           component={PatientsList}
-          options={{ title: "Pacientes" }}
+          options={{ title: "Clinica SQLite - Pacientes" }}
         />
 
         <Stack.Screen
@@ -27,7 +27,7 @@ export default function Routes() {
         <Stack.Screen
           name="Consultas"
           component={ConsultationsList}
-          options={{ title: "Consultas" }}
+          options={{ title: "Clinica SQLite - Consultas" }}
         />
 
         <Stack.Screen

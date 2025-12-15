@@ -1,3 +1,4 @@
+// ./src/database/init.js
 export default async function initializeDatabase(db) {
   try {
     await db.execAsync(`
