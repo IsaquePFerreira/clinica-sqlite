@@ -15,7 +15,9 @@ export default function ConsultationForm({ navigation, route }) {
   async function load() {
     const c = await getConsultationById(id);
     if (c) {
-      setData(c.data);
+      setData(
+        c.data?.toDate().toISOString().substring(0, 10)
+      );
       setDescricao(c.descricao);
     }
   }

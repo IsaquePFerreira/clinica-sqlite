@@ -18,6 +18,19 @@ export default function ConsultationsList({ navigation, route }) {
     return unsubscribe;
   }, [navigation, paciente]);
 
+  function formatDate(data) {
+    // Firestore Timestamp
+    if (data?.toDate instanceof Function) {
+      return data.toDate().toLocaleDateString();
+    }
+
+   // String or other format
+    if (typeof data === "string") {
+      return data;
+    }
+  return "";
+}
+
   function confirmDelete(id) {
     Alert.alert('Confirmar', 'Excluir consulta?', [
       { text: 'Cancelar', style: 'cancel' },
@@ -50,7 +63,9 @@ export default function ConsultationsList({ navigation, route }) {
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <View style={{ padding: 12, borderBottomWidth: 1, borderColor: '#eee' }}>
-            <Text style={{ fontWeight: 'bold' }}>{item.data}</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              {formatDate(item.data)}
+            </Text>
             <Text>{item.descricao}</Text>
 
             <View style={{ flexDirection: 'row', marginTop: 8 }}>
