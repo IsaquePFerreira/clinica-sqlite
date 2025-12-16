@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Button } from 'react-native';
 import { getAllPatients, deletePatient } from '../services/patientService';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export default function PatientsList({ navigation }) {
   const [patients, setPatients] = useState([]);
@@ -21,6 +23,10 @@ export default function PatientsList({ navigation }) {
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Excluir', style: 'destructive', onPress: async () => { await deletePatient(id); load(); } }
     ]);
+  }
+
+  async function handleSignOut() {
+    await signOut(auth);
   }
 
   return (
@@ -55,6 +61,8 @@ export default function PatientsList({ navigation }) {
           </View>
         )}
       />
+
+      <Button title="Sair" onPress={handleSignOut} color="red" />
     </View>
   );
 }
