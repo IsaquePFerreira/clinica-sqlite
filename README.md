@@ -9,3 +9,14 @@
    ```bash
    expo start
    ```
+NOTA:
+
+Usuário de teste:
+
+- login: testuser@mail.com
+- password: testuser
+
+DUPLA:
+
+- Isaque P. Ferreira
+- John Victor Viana
